@@ -33,7 +33,7 @@ scipy
 SecretStorage
 six
 soupsieve
-tensorboard
+# tensorboard
 tensorflow==1.13.1
 termcolor
 torch

@@ -11,6 +11,7 @@ class invoice_m:
     """
     def __init__(self,result):
         self.result = union_rbox(result,0.2)
+        print("增值税机打发票", self.result)
         self.N = len(self.result)
         self.res = {}
         self.code()                             #发票代码

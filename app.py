@@ -23,6 +23,7 @@ allowed_extension = ['jpg','png','JPG']
 
 # Flask
 app = Flask(__name__)
+app.config['JSON_AS_ASCII'] = False
 CORS(app, resources=r'/*')
 
 # 构建接口返回结果
@@ -38,12 +39,14 @@ def build_api_result(code, message, data,file_name,ocr_identify_time):
 
 # 检查文件扩展名
 def allowed_file(filename):
+    print(filename)
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extension
 
 
 # 增值税发票OCR识别接口
 @app.route('/invoice-ocr', methods=['POST'])
 def invoice_ocr():
+    start = time.time()
     # 校验请求参数
     if 'file' not in request.files:
         return build_api_result(101, "请求参数错误", {},{},{})
@@ -118,6 +121,8 @@ def invoice_ocr():
         res = res.res
     else:
         res = []
+    end = time.time()
+    print(f"Used {end - start}s")
     if len(res) > 0:
         tz = pytz.timezone('Asia/Shanghai') #东八区
         ocr_identify_time = datetime.fromtimestamp(int(time.time()),pytz.timezone('Asia/Shanghai')).strftime('%Y-%m-%d %H:%M:%S')
@@ -125,7 +130,7 @@ def invoice_ocr():
     elif len(res) == 0:
         return build_api_result(104, "识别为空！" ,{},{},{})
         
-if __name__ == "__main__":
-    # Run
-    app.config['JSON_AS_ASCII'] = False
-    app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
+# if __name__ == "__main__":
+#     # Run
+#     app.config['JSON_AS_ASCII'] = False
+#     app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
